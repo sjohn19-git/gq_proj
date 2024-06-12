@@ -6,11 +6,13 @@ Created on Fri May 31 13:22:18 2024
 """
 
 import os
+os.chdir("/home/sjohn/gq_proj/codes/Database2Python_Tools")
 import numpy as np
 import pandas as pd
 
 # Created Modules
 from database2python.Antelope2Python import event_dataframe
+
 
 
 ##-----INPUTS-----##
@@ -32,6 +34,7 @@ for year in catalog_years:
     catalog_df = event_dataframe(os.path.join(dbpath, ('catalog_' + str(year)) ))
     annual_catalog = pd.concat([annual_catalog, catalog_df])
 
+os.chdir("/home/sjohn/gq_proj/data")
 annual_catalog.to_csv('eq_catalog_1988-2024.csv', index=False) 
 
 glacial_quakes = annual_catalog.loc[annual_catalog.etype == 'G']

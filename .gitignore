@@ -1,5 +1,4 @@
 #directories
-./Data
-./Results
-./catalogs
-./codes/__pycache__
+/home/sjohn/gq_proj/data
+/home/sjohn/gq_proj/results
+
