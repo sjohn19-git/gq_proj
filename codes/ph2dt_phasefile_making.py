@@ -37,7 +37,7 @@ is_year_yr = [dt.year>2004 for dt in gq_datetime]
 gq_p_2005=gq_p[is_year_yr] 
 gq_p_2005_ev=gq_p_2005["evid"].unique()    
     
-os.chdir("/Users/sebinjohn/gq_proj/data/reloc")
+os.chdir("/Users/sebinjohn/gq_proj/data/reloc/>2005")
 with open("all.dat", "w") as file:
     for ele in gq_p_2005_ev:
         ele_df=gq_p_2005[gq_p_2005["evid"]==ele]
@@ -46,6 +46,7 @@ with open("all.dat", "w") as file:
         edepth=ele_df["depth"].iloc[0]
         emag=ele_df["ml"].iloc[0]
         time_str=ele_df['time'].iloc[0]
+        wgt=ele_df['wgt'].iloc[0]
         ele_date=datetime.strptime(time_str[:26], '%Y-%m-%d %H:%M:%S.%f')
         file.write( "# "+str(ele_date.year) + " "+str(ele_date.month)
                    +" "+str(ele_date.day)+" "+str(ele_date.hour)
@@ -58,7 +59,10 @@ with open("all.dat", "w") as file:
             artimes=pd.to_datetime(ele_df["artime"],unit="s")
             tt=str((artimes.iloc[i]-ele_date).total_seconds())[:4]
             sta=str(ele_df["sta"].iloc[i])
-            file.write(sta+" "+tt+" -0.2 P"+"\n")
+            wgt=ele_df['wgt'].iloc[i]
+            if wgt>1:
+                wgt=0.5
+            file.write(sta+" "+tt+" "+str(wgt)+" P"+"\n")
        
 stas=gq_p_2005['sta'].unique()
 stat_loc=pd.read_csv("./Alaska_network_station_location.csv")
@@ -72,8 +76,6 @@ with open("allsta.dat", "w") as file:
     for i in range(len(stas)):
         file.write(str(stas[i])+" "+str(lat_sta[i])+" "+str(lon_sta[i])+"\n")
  
-
-
 
 
 ##year classific
@@ -104,7 +106,10 @@ with open("yr.dat", "w") as file:
             artimes=pd.to_datetime(ele_df["artime"],unit="s")
             tt=str((artimes.iloc[i]-ele_date).total_seconds())[:4]
             sta=str(ele_df["sta"].iloc[i])
-            file.write(sta+" "+tt+" -0.2 P"+"\n")
+            wgt=ele_df['wgt'].iloc[i]
+            if wgt>1:
+                wgt=0
+            file.write(sta+" "+tt+" "+str(wgt)+" P"+"\n")
        
 #writing station.dat
 stas=gq_p_yr['sta'].unique()
@@ -119,8 +124,5 @@ with open("station.dat", "w") as file:
     for i in range(len(stas)):
         file.write(str(stas[i])+" "+str(lat_sta[i])+" "+str(lon_sta[i])+"\n")
  
-
-
-
 
 

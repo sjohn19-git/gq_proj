@@ -21,7 +21,7 @@ os.chdir("/Users/sebinjohn/gq_proj")
 
 #catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/catalog_1988-2024.csv")
 
-gq_catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/gq_catalog_1988-2024.csv")
+gq_catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/catalogs/gq_catalog_1988-2024.csv")
 gq_lon=gq_catalog['lon']
 gq_lat=gq_catalog['lat']
 

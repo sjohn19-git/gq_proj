@@ -18,17 +18,17 @@ import datetime
 
 os.chdir("/Users/sebinjohn/gq_proj")
 
-catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/catalog_1988-2024.csv")
+catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/catalogs/catalog_1988-2024.csv")
 
 
 gq_catalog = catalog[catalog['etype'] == 'G']
 gq_lon=gq_catalog['lon']
 gq_lat=gq_catalog['lat']
 
-gq_catalog.to_csv("/Users/sebinjohn/gq_proj/data/gq_catalog_1988-2024.csv")
+gq_catalog.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/gq_catalog_1988-2024.csv")
 
 #############
-gq_catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/gq_catalog_1988-2024.csv")
+gq_catalog=pd.read_csv("/Users/sebinjohn/gq_proj/data/catalogs/gq_catalog_1988-2024.csv")
 gq_lon=gq_catalog['lon']
 gq_lat=gq_catalog['lat']
 
@@ -73,7 +73,7 @@ columbia_gq['time'] = pd.to_datetime(columbia_gq['time'], unit='s')
 
 
 
-columbia_gq.to_csv("/Users/sebinjohn/gq_proj/data/columbia_gq_1988-2024.csv")
+columbia_gq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/columbia_gq_1988-2024.csv")
 ##############columbia_eq#####
 
 
@@ -93,7 +93,7 @@ columbia_eq=eq_catalog[columbia_boole]
 
 columbia_eq['time'] = pd.to_datetime(columbia_eq['time'], unit='s')
 
-columbia_eq.to_csv("/Users/sebinjohn/gq_proj/data/columbia_eq_1988-2024.csv")
+columbia_eq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/columbia_eq_1988-2024.csv")
 ##############
 
 hubval_lat1=59.994
@@ -110,7 +110,7 @@ for i in tqdm(range(len(gq_lon))):
 hubval_gq=gq_catalog[hubval_boole]
 hubval_gq['time'] = pd.to_datetime(hubval_gq['time'], unit='s')
 
-hubval_gq.to_csv("/Users/sebinjohn/gq_proj/data/hubval_gq_1988-2024.csv")
+hubval_gq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/hubval_gq_1988-2024.csv")
 
 ##################
 
@@ -130,7 +130,7 @@ hubval_eq=eq_catalog[hubval_boole]
 
 hubval_eq['time'] = pd.to_datetime(hubval_eq['time'], unit='s')
 
-hubval_eq.to_csv("/Users/sebinjohn/gq_proj/data/hubval_eq_1988-2024.csv")
+hubval_eq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/hubval_eq_1988-2024.csv")
 
 ##############
 
@@ -148,7 +148,7 @@ for i in tqdm(range(len(gq_lon))):
 la_gq=gq_catalog[la_boole]
 la_gq['time'] = pd.to_datetime(la_gq['time'], unit='s')
 
-la_gq.to_csv("/Users/sebinjohn/gq_proj/data/la_gq_1988-2024.csv")
+la_gq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/la_gq_1988-2024.csv")
 
 ######################
 
@@ -164,7 +164,7 @@ la_eq=eq_catalog[la_boole]
 
 la_eq['time'] = pd.to_datetime(la_eq['time'], unit='s')
 
-la_eq.to_csv("/Users/sebinjohn/gq_proj/data/la_eq_1988-2024.csv")
+la_eq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/la_eq_1988-2024.csv")
 
 ##yahtse
 ya_lat1=60.15
@@ -181,7 +181,7 @@ for i in tqdm(range(len(gq_lon))):
 ya_gq=gq_catalog[ya_boole]
 ya_gq['time'] = pd.to_datetime(ya_gq['time'], unit='s')
 
-ya_gq.to_csv("/Users/sebinjohn/gq_proj/data/ya_gq_1988-2024.csv")
+ya_gq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/ya_gq_1988-2024.csv")
 
 ###ya eq
 
@@ -197,7 +197,7 @@ ya_eq=eq_catalog[ya_boole]
 
 ya_eq['time'] = pd.to_datetime(ya_eq['time'], unit='s')
 
-ya_eq.to_csv("/Users/sebinjohn/gq_proj/data/ya_eq_1988-2024.csv")
+ya_eq.to_csv("/Users/sebinjohn/gq_proj/data/catalogs/ya_eq_1988-2024.csv")
 
 
 ######map
