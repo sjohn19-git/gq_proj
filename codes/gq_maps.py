@@ -74,13 +74,14 @@ def map_plo(lon,lat,yr,glacier_xs,glacier_ys,reloc=1):
     glce_lon=-147.1078
     fig=pygmt.Figure()
     proj="L-155/35/33/85/10c"
-    reg="212/61/214/61.5r"
+    reg="212.5/61/213.5/61.35r"
+    fig.coast(region=reg, projection=proj,borders=["1/0.5p,black"],area_thresh='1',dcw=["US.AK","RU","CA"],shorelines="0.02p",land='lightgrey',water="lightblue")
     with pygmt.config(MAP_FRAME_TYPE="plain"):
         fig.basemap(region=reg, projection=proj,frame="lrtb")
     for i in tqdm(range(len(glacier_xs))):
         x = glacier_xs[i]
         y = glacier_ys[i]
-        fig.plot(x=x, y=y, pen="0.5p,grey")
+        fig.plot(x=x, y=y,pen="0.2p,black",fill='white')
     pygmt.makecpt(cmap="rainbow", series=[2010, 2025,1])
     fig.plot(x=lon,y=lat,style="c0.08c",fill=yr,pen="1p,+cl",cmap=True)
     fig.plot(x=[glce_lon, glce_lon], y=[60,62], pen="1p,red")
@@ -88,7 +89,6 @@ def map_plo(lon,lat,yr,glacier_xs,glacier_ys,reloc=1):
         fig.text(text="relocated location {}".format(yr[0]),x=213,y=61.45)
     else:
         fig.text(text="original location {}".format(yr[0]),x=213,y=61.45)
-    fig.coast(region=reg, projection=proj,borders=["1/0.5p,black"],area_thresh='100',dcw=["US.AK","RU","CA"],shorelines="0.02p")
     fig.colorbar(frame="x2+lyear",projection=proj,position="n0.05/-0.08+w9c/0.25c+h")
     fig.basemap(map_scale="jBC+w10k+f")
     fig.show()  
@@ -136,11 +136,13 @@ for yr in years:
     (bounding_box[0], bounding_box[3]),
     (bounding_box[2], bounding_box[3]),
     (bounding_box[2], bounding_box[1])])
+    cnt=0
     glacier_xs,glacier_ys=[],[]
     for c in tqdm(range(gdf_transformed.shape[0])):
         geom=gdf_transformed.geometry[c]
         if geom.within(bbox_polygon):
             if geom.geom_type == 'Polygon':
+                cnt+=1
                 x, y = geom.exterior.xy
                 glacier_xs.append(x)
                 glacier_ys.append(y)
