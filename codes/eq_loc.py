@@ -25,7 +25,7 @@ lat = mdat.iloc[:, 1].values
 yr=mdat.iloc[:, 10].values
 ids=mdat.iloc[:, 0].values
 
-mdat.to_csv("/Users/sebinjohn/gq_proj/data/reloc/>2005/reloc.csv")
+#mdat.to_csv("/Users/sebinjohn/gq_proj/data/reloc/>2005/reloc.csv")
 
 file_loc = '/Users/sebinjohn/gq_proj/data/reloc/>2005/hypoDD.loc'
 mdat = pd.read_csv(file_loc, delim_whitespace=True, header=None)
@@ -34,7 +34,7 @@ lon_o = mdat.iloc[:, 2].values
 lat_o = mdat.iloc[:, 1].values
 yr_o=mdat.iloc[:, 10].values
 
-mdat.to_csv("/Users/sebinjohn/gq_proj/data/reloc/>2005/loc.csv")
+#mdat.to_csv("/Users/sebinjohn/gq_proj/data/reloc/>2005/loc.csv")
 
 gdf = gpd.read_file("/Users/sebinjohn/gq_proj/data/glacier_extent/Alaska_Glacier_Inventory__RGI_.kml",driver='KML')
 
@@ -143,27 +143,33 @@ un_years=np.arange(2010,2025,1)
 for i in range(len(un_years)):
     cyr=un_years[i]
     print(cyr)
-    bool_o=yr_o==cyr
-    cyr_o=yr_o[bool_o]
-    clon_o=lon_o[bool_o]
-    clat_o=lat_o[bool_o]
-    cids_o=ids_o[bool_o]
-    boole=yr==cyr
-    cids=ids[boole]
+    #year sep
+    cbool_o=yr_o==cyr
+    cyr_o=yr_o[cbool_o]
+    clon_o=lon_o[cbool_o]
+    clat_o=lat_o[cbool_o]
+    cids_o=ids_o[cbool_o]
+    cboole=yr==cyr
+    cids=ids[cboole]
+    #clusterd original
     boolec=np.isin(cids_o, cids)
+    #original_lat lons
     clon_cl=clon_o[boolec]
     clat_cl=clat_o[boolec]
     cyr_cl=cyr_o[boolec]
-    clon=lon[boole]
-    clat=lat[boole]
-    cyr=yr[boole]
-    maps(clon_o,clat_o,cyr_o,clon_cl,clat_cl,cyr_cl,clon,clat,cyr)    
+    #clusterd_lat lons
+    clon=lon[cboole]
+    clat=lat[cboole]
+    cyri=yr[cboole]
+    maps(clon_o,clat_o,cyr_o,clon_cl,clat_cl,cyr_cl,clon,clat,cyri)    
     if not os.path.exists("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/{}".format(cyr)):
         os.makedirs("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/{}".format(cyr))
         os.chdir("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/{}".format(cyr))
     else:
         os.chdir("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/{}".format(cyr))
-        
+    reloc= {'Latitude': clat,'Longitude': clon}
+    df = pd.DataFrame(reloc)
+    df.to_csv(str(cyr)+".csv", index=False)  
     
 
 
