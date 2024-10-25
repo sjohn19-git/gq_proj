@@ -30,7 +30,7 @@ def set_layer_style(layer):
 shapefiles.sort()
 layout_manager = QgsProject.instance().layoutManager()
 # Find the layout by name
-layout = layout_manager.layoutByName("gq_reloc")
+layout = layout_manager.layoutByName("website")
 
 
 del shapefiles[0]
@@ -54,13 +54,15 @@ for i in range(len(shapefiles)):
         QgsProject.instance().addMapLayer(layer1)
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         layer1.setCrs(crs)
-        layer1.loadNamedStyle("/Users/sebinjohn/gq_proj/codes/qgis_alaska/style_gq.qml")
+        layer1.loadNamedStyle("/Users/sebinjohn/gq_proj/codes/qgis_alaska/web_style.qml")
         layer1.triggerRepaint()
         if not os.path.exists("/Users/sebinjohn/gq_proj/results/before and after relocation/"+yr):
             os.makedirs("/Users/sebinjohn/gq_proj/results/before and after relocation/"+yr)
         os.chdir("/Users/sebinjohn/gq_proj/results/before and after relocation/"+yr)
         exporter = QgsLayoutExporter(layout)
-        exporter.exportToPdf("./{}.pdf".format(yr), QgsLayoutExporter.PdfExportSettings())
+        image_settings = QgsLayoutExporter.ImageExportSettings()
+        image_settings.dpi = 600 
+        exporter.exportToImage("./{}.png".format(yr), image_settings)
         QgsProject.instance().removeMapLayer(layer.id())
         QgsProject.instance().removeMapLayer(layer1.id())
     except Exception as e:
@@ -68,20 +70,21 @@ for i in range(len(shapefiles)):
     #iface.openLayoutDesigner(layout)
 
 
-sf=shapefiles[-1]
-print(sf)
-layer = QgsVectorLayer(sf, os.path.basename(sf), "ogr")
-set_layer_style(layer)
-QgsProject.instance().addMapLayer(layer)
-yr=os.path.basename(sf)[3:7]
-os.chdir("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/"+yr)
-uri = "file://{}/{}?delimiter={}&xField={}&yField={}".format(os.getcwd(),yr+'.csv', ",", "Longitude", "Latitude")
-layer1=QgsVectorLayer(uri, yr+"_reloc", "delimitedtext")
-QgsProject.instance().addMapLayer(layer1)
-crs = QgsCoordinateReferenceSystem("EPSG:4326")
-layer1.setCrs(crs)
-layer1.loadNamedStyle("/Users/sebinjohn/gq_proj/codes/qgis_alaska/style_gq.qml")
-layer1.triggerRepaint()
-iface.openLayoutDesigner(layout)
+
+# sf=shapefiles[-1]
+# print(sf)
+# layer = QgsVectorLayer(sf, os.path.basename(sf), "ogr")
+# set_layer_style(layer)
+# QgsProject.instance().addMapLayer(layer)
+# yr=os.path.basename(sf)[3:7]
+# os.chdir("/Users/sebinjohn/gq_proj/data/relocation_csvs_qgis/"+yr)
+# uri = "file://{}/{}?delimiter={}&xField={}&yField={}".format(os.getcwd(),yr+'.csv', ",", "Longitude", "Latitude")
+# layer1=QgsVectorLayer(uri, yr+"_reloc", "delimitedtext")
+# QgsProject.instance().addMapLayer(layer1)
+# crs = QgsCoordinateReferenceSystem("EPSG:4326")
+# layer1.setCrs(crs)
+# layer1.loadNamedStyle("/Users/sebinjohn/gq_proj/codes/qgis_alaska/style_gq.qml")
+# layer1.triggerRepaint()
+# iface.openLayoutDesigner(layout)
     
     
