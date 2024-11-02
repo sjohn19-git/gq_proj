@@ -125,6 +125,7 @@ def plot_sta_gat(stream):
     
 stream=event_gather(885906,6)
 plot(stream)
+
 sta="GLI"
 stream=station_gather(sta,6)
 plot_sta_gat(stream)
