@@ -1,0 +1,12 @@
+# Example config.yaml
+platforms:
+  - name: copernicus
+    access:
+      username: "your_username"
+      password: "your_password"
+      url: "https://scihub.copernicus.eu/dhus"
+  - name: usgs
+    access:
+      username: "sjohn19"
+      password: "Kappabeef@13"
+      url: "https://earthexplorer.usgs.gov"

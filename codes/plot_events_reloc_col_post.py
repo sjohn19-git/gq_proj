@@ -10,13 +10,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
-from obspy.clients.fdsn import client
+from obspy.clients.fdsn import Client
 from obspy import UTCDateTime
 import matplotlib.dates as mdates
 from matplotlib.dates import date2num as d2n
 import matplotlib.ticker as ticker
 import random
 from obspy import Stream,Trace
+from sklearn.preprocessing import minmax_scale
+
+
+
+
+client = Client("IRIS") 
 
 
 def haversine(lat1, lon1, lat2, lon2):
@@ -72,7 +78,7 @@ columbia_gq_dropped['year'] = columbia_gq_dropped['time'].dt.year
 
 stations=columbia_gq["sta"].unique()
 
-def station_gather(sta,maxlen,time_fr,evids=None):
+def station_gather(sta,maxlen,time_fr,evids=None,xof=20):
     cn=0
     ev_sta=columbia_gq[columbia_gq['sta']==sta]
     ev_ids=ev_sta["evid"].unique()
@@ -82,11 +88,11 @@ def station_gather(sta,maxlen,time_fr,evids=None):
         print("no common events found")
         return None
     ordered_ids = [id if id in ids else np.nan for id in evids]
-    for i in range(6):
+    for i in range(maxlen):
         try:
             ev=columbia_gq[columbia_gq['evid']==ordered_ids[i]]
             org_ti=UTCDateTime(ev["time"].iloc[0])
-            st=org_ti-(time_fr-10)
+            st=org_ti-(time_fr-xof)
             et=org_ti+time_fr
             if cn==0:
                 stream = client.get_waveforms("AK,AV,XE,YM,TA,AT", sta, "*", "BHZ", st, et)
@@ -94,7 +100,7 @@ def station_gather(sta,maxlen,time_fr,evids=None):
             else:
                 stream += client.get_waveforms("AK,AV,XE,YM,TA,AT", sta, "*", "BHZ", st, et)
         except Exception as e:
-            n_points = (2*time_fr)*50
+            n_points = time_fr*50+(time_fr-xof)*50
             network = "NET"       # Example network name
             station = "STA"       # Example station name
             channel = "BHZ"       # Example channel name
@@ -125,57 +131,88 @@ def cus_ticker(x,pos):
         string=dt.strftime('%M:%S')
     return string
 
-def plot_sta_gat(stream,time_fr):
+def plot_sta_gat(stream,time_fr,evids=None,maxlen=None,spacing=1):
     
-    fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(12,9))
-    plt.subplots_adjust(wspace=0.2)
-    # Flatten axes if it is a 2D array to iterate linearly
-    if isinstance(axes, np.ndarray):
-        axes = axes.T.flatten()
-
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14,9))
+    plt.subplots_adjust(wspace=0.1)
     for i, tr in enumerate(stream):
+        if i<maxlen/2:
+            c=0
+            position = i
+        else:
+            c=1
+            position = i - int(maxlen / 2)
+        evid=evids[i]
         timesec = tr.times()
         starttime = tr.stats.starttime
-        mark_time=starttime+(time_fr-10)
-        obspy_times = [starttime + ele for ele in timesec]
-        plt_times = [d2n(ele) for ele in obspy_times]
         label = f"{tr.stats.network}.{tr.stats.station}..{tr.stats.channel}"
-        
-        axes[i].plot(plt_times, tr.data, 'k', lw=0.5, label=label)
-        axes[i].xaxis.set_major_locator(ticker.LinearLocator(numticks=5))
-        axes[i].xaxis.set_major_formatter(ticker.FuncFormatter(cus_ticker))
-        axes[i].legend(loc="upper left")
-        axes[i].axvline(x=d2n(mark_time), color='black', linestyle='--', linewidth=1.5, label='Mark Time')
-        axes[i].set_xlim([plt_times[0], plt_times[-1]])
-    axes[0].set_title("Post events")
-    axes[3].set_title("Columbia events")
+        normalized_data = minmax_scale(tr.data, feature_range=(0, 1))
+        axes[c].plot(timesec,normalized_data+position*spacing, 'k', lw=0.5)
+        axes[c].text(timesec[-10*50],spacing+position*spacing,str(evid))
+        axes[c].xaxis.set_major_locator(ticker.LinearLocator(numticks=5))
+        #axes[c].xaxis.set_major_formatter(ticker.FuncFormatter(cus_ticker))
+        #axes[c].legend(loc="upper left")
+        #axes[c].axvline(x=mark_time, color='black', linestyle='--', linewidth=1.5,)
+        axes[c].set_xlim([0, timesec[-1]])
+    axes[1].set_title("Post events")
+    axes[0].set_title("Columbia events")
     plt.show()
         
 
+def event_sel(ev_no,col_ids_re,pos_ids_re):
+    col_ids,pos_ids=[],[]
+    ev_sta=columbia_gq[columbia_gq['sta']==sta]
+    ev_ids=ev_sta["evid"].unique()
+    for i in range(ev_no):
+        selected_col_id = random.sample(list(col_ids_re), 1)[0]
+        while selected_col_id not in ev_ids and selected_col_id not in col_ids:
+            selected_col_id = random.sample(list(col_ids_re), 1)[0]
+        col_ids.append(selected_col_id)
+    for i in range(ev_no):
+        selected_pos_id = random.sample(list(pos_ids_re), 1)[0]
+        while selected_pos_id not in ev_ids and selected_pos_id not in pos_ids:
+            selected_pos_id = random.sample(list(pos_ids_re), 1)[0]
+        pos_ids.append(selected_pos_id)
+    ids_to_plo = col_ids + pos_ids
+    return ids_to_plo
+                
+    
 
-# Randomly select 3 elements from each list
-selected_col_ids = random.sample(list(col_ids_re), 3)
-selected_pos_ids = random.sample(list(pos_ids_re), 3)
+ev_no=17
+sta="GLI"
+ids_to_plo=event_sel(ev_no,col_ids_re,pos_ids_re)
 
 # Combine the two lists
-ids_to_plo = selected_col_ids + selected_pos_ids
 
-sta="GLI"
-stream,avail_ids=station_gather(sta,6,evids=ids_to_plo,time_fr=50)
+maxlen=len(ids_to_plo)
 
 
-plot_sta_gat(stream,time_fr=50)
+stream,avail_ids=station_gather(sta,maxlen,evids=ids_to_plo,time_fr=50,xof=30)
+
+
+plot_sta_gat(stream,time_fr=50,evids=ids_to_plo,maxlen=maxlen,spacing=0.8)
 
 
 #filtering
 
-stream2=stream.copy()
+stream2 = stream.copy()
 
-cutoff_frequency = 1 # in Hz
-filter_type = 'highpass'  # Type of filter
+# Set bandstop filter parameters to remove frequencies between 5 and 10 Hz
+  # Minimum cutoff frequency in Hz
+freq = 1 # Maximum cutoff frequency in Hz
+filter_type = 'highpass'  # Bandstop filter
 
-# Apply high-pass filter to all traces in the stream
+# Apply bandstop filter to all traces in the stream
 for trace in stream2:
-    trace.filter(filter_type, freq=cutoff_frequency)
+    trace.filter(filter_type, freq=freq, corners=4, zerophase=True)
+    trace.taper(max_percentage=0.001, type='cosine')
+    
+plot_sta_gat(stream2,time_fr=50,evids=ids_to_plo,maxlen=maxlen,spacing=0.8)
 
-plot_sta_gat(stream,time_fr=50)
+fig1, ax1 = plt.subplots()
+
+# Generate the spectrogram and plot it on ax1
+stream[0].spectrogram(axes=ax1)
+
+# Display the plot
+plt.show()
