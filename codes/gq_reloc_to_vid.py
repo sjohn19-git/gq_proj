@@ -12,7 +12,7 @@ import os
 
 images=glob.glob("/Users/sebinjohn/gq_proj/Results/before and after relocation/*/2*.png")
 
-def create_video(images, video_name, fps=1):
+def create_video(images, video_name, fps=0.5):
     # Get all the images from the folder
  
     images.sort()  # Ensure the images are in the correct order

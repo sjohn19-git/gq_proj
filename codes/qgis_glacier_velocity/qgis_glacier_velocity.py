@@ -57,7 +57,6 @@ for path in sorted_files:
 
 
     # Open the layout in QGIS interface
-    corners = [QgsPointXY(0, 0), QgsPointXY(5, 0), QgsPointXY(5, 5), QgsPointXY(0, 5)]
     title = QgsLayoutItemLabel(layout)
     title.setText(year)
     title.setFont(QFont("Arial", 16))  # Set font and size for the title

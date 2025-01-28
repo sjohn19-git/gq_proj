@@ -141,6 +141,9 @@ arriavls_plot(times_eq_ml_sub_colu, delt_eq_ml_sub_colu,"eq_arrivals columbia")
 gq_vs_eq(gq_per_year.index,gq_per_year.values,eq_per_year.index,eq_per_year.values,"Columbia")
 
 
+
+
+
 ##########hubval
 
 
