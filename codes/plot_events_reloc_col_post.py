@@ -205,14 +205,44 @@ filter_type = 'highpass'  # Bandstop filter
 # Apply bandstop filter to all traces in the stream
 for trace in stream2:
     trace.filter(filter_type, freq=freq, corners=4, zerophase=True)
-    trace.taper(max_percentage=0.001, type='cosine')
+    trace.taper(max_percentage=0.0001, type='cosine')
     
 plot_sta_gat(stream2,time_fr=50,evids=ids_to_plo,maxlen=maxlen,spacing=0.8)
+
+
+
 
 fig1, ax1 = plt.subplots()
 
 # Generate the spectrogram and plot it on ax1
 stream[0].spectrogram(axes=ax1)
+ax1.set_ylim([0,5])
+# Display the plot
+plt.show()
+
+fig1, ax1 = plt.subplots()
+
+# Generate the spectrogram and plot it on ax1
+stream2[-14].spectrogram(axes=ax1)
+ax1.set_ylim([0,5])
 
 # Display the plot
 plt.show()
+
+
+fig, axes = plt.subplots(nrows=17, ncols=2, figsize=(15, 60))  # Adjust figsize for better visibility
+
+# Flatten the axes array for easier indexing
+axes = axes.T.flatten()
+
+# Loop through each trace in stream2 and plot
+for i in range(len(stream2)):
+    # Get the corresponding subplot axis
+    ax = axes[i]
+    
+    # Plot spectrogram on the current axis
+    stream2[i].spectrogram(axes=ax)
+    
+    # Set the title for the current subplot
+    ax.set_title(f"Trace {i+1}", fontsize=10)
+    ax.set_ylim([0,5])

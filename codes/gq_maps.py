@@ -93,7 +93,7 @@ def map_plo(lon,lat,yr,glacier_xs,glacier_ys,reloc=1):
     fig.basemap(map_scale="jBC+w10k+f")
     fig.show()  
   
-years=np.arange(2010,2020,2)
+years=np.arange(2010,2020,1)
 
 for yr in years:
     cl_yr_o=yr_o[yr_o==yr]
@@ -156,8 +156,34 @@ for yr in years:
     map_plo(cl_lon_re,cl_lat_re,cl_yr_re,glacier_xs,glacier_ys,1)
     
     
+def map_plo_no_gl(lon,lat,yr):   
+    glce_lat=61.134
+    glce_lon=-147.1078
+    fig=pygmt.Figure()
+    proj="L-155/35/33/85/10c"
+    reg="212.5/61/213.5/61.35r"
+    fig.coast(region=reg, projection=proj,borders=["1/0.5p,black"],area_thresh='1',dcw=["US.AK","RU","CA"],shorelines="0.02p",land='lightgrey',water="lightblue")
+    with pygmt.config(MAP_FRAME_TYPE="plain"):
+        fig.basemap(region=reg, projection=proj,frame="lrtb")
+    pygmt.makecpt(cmap="rainbow", series=[2010, 2025,1])
+    fig.plot(x=lon,y=lat,style="c0.08c",fill=yr,pen="1p,+cl",cmap=True)
+    fig.plot(x=[glce_lon, glce_lon], y=[60,62], pen="1p,red")
+    fig.text(text="original location {}".format(yr[0]),x=213,y=61.45)
+    fig.colorbar(frame="x2+lyear",projection=proj,position="n0.05/-0.08+w9c/0.25c+h")
+    fig.basemap(map_scale="jBC+w10k+f")
+    fig.show()  
     
+years=np.arange(2010,2020,1)
 
-
-
-
+for yr in years:
+    cl_yr_o=yr_o[yr_o==yr]
+    cl_lon_o=lon_o[yr_o==yr]
+    cl_lat_o=lat_o[yr_o==yr]
+    cl_ids_o=ids_o[yr_o==yr]
+    map_plo_no_gl(cl_lon_o,cl_lat_o,cl_yr_o)
+    
+    cl_yr_re=yr_re[yr_re==yr]
+    cl_lon_re=lon_re[yr_re==yr]
+    cl_lat_re=lat_re[yr_re==yr]
+    cl_ids_re=ids_re[yr_re==yr]
+    map_plo_no_gl(cl_lon_re,cl_lat_re,cl_yr_re)
