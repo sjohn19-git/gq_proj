@@ -36,8 +36,8 @@ def arriavls_plot(times, deltas,title):
     axes.set_xlim([xlim_start, xlim_end])
     axes.set_title(title)
     # Format the x-axis to show dates nicely
-    axes.xaxis.set_major_locator(mdates.YearLocator())
-    axes.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    #axes.xaxis.set_major_locator(mdates.YearLocator())
+    #axes.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
     axes.set_ylim([0,2])
     # Rotate date labels for better readability
     plt.xticks(rotation=45)

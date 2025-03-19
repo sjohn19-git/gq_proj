@@ -59,7 +59,7 @@ reg="212/61/214/61.3r"
 with pygmt.config(MAP_FRAME_TYPE="plain"):
     fig.basemap(region=reg, projection=proj,frame="lrtb")
 pygmt.makecpt(cmap="rainbow", series=[2008, 2025,1])
-fig.plot(x=lon,y=lat,style="c0.06c",fill=yr,pen="1p,+cl",cmap=True)
+fig.plot(x=lon_re,y=lat_re,style="c0.06c",fill=yr_re,pen="1p,+cl",cmap=True)
 fig.text(text="relocated location",x=213,y=61.35)
 fig.coast(region=reg, projection=proj,borders=["1/0.5p,black"],area_thresh='600',dcw=["US.AK","RU","CA"],shorelines="0.02p")
 fig.colorbar(frame="x1+lyear",projection=proj,position="n0.05/-0.08+w13c/0.25c+h")
