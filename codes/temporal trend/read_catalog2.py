@@ -26,6 +26,7 @@ gq_lon=gq_catalog['lon']
 gq_lat=gq_catalog['lat']
 
 
+
 ###plot functions
 def arriavls_plot(times, deltas,title):
     fig, axes = plt.subplots()
@@ -64,7 +65,7 @@ def quakes_year(years,gqs,tit,typ,*argv):
         
 
 def gq_vs_eq(years,gqs,eq_yrs,eq,gl):
-    fig, ax = plt.subplots(figsize=(10, 6),dpi=300)
+    fig, ax = plt.subplots(figsize=(10, 6),dpi=600)
     ax.bar(years,gqs,color="grey",width=0.7)
     ax2=ax.twinx()
     ax.set_xlabel('Year')
@@ -75,8 +76,8 @@ def gq_vs_eq(years,gqs,eq_yrs,eq,gl):
     ax.set_xlim([2005,2025])
     ax2.plot(eq_yrs,eq,color='red',label=("number of earthquakes"),marker="*")
     ax2.legend()
-    ax2.set_ylim([0,800])
-    ax.set_ylim([0,800])
+    ax2.set_ylim([0,350])
+    ax.set_ylim([0,350])
     fig.savefig("/Users/sebinjohn/gq_proj/Results/columbia_glacier/gq_vs_eq.png")
 
 
@@ -255,4 +256,12 @@ times_eq_ml_sub_colu=ya_eq_ml_sub['time']
 arriavls_plot(times_eq_ml_sub_colu, delt_eq_ml_sub_colu,"eq_arrivals Yahtse")
 
 gq_vs_eq(gq_per_year.index,gq_per_year.values,eq_per_year.index,eq_per_year.values,"Yahtse")
+
+###
+gqs=gq_catalog.drop_duplicates(subset='evid', keep='first')
+from shapely.geometry import Point
+geometry = [Point(xy) for xy in zip(gqs['lon'], gqs['lat'])]
+gdf = gpd.GeoDataFrame(gqs, geometry=geometry, crs="EPSG:4326")
+gdf_geometry = gdf[['geometry']]
+gdf_geometry.to_file("/Users/sebinjohn/gq_proj/data/catalogs/gqs.kml", driver="KML")
 

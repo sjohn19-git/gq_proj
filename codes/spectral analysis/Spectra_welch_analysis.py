@@ -64,13 +64,34 @@ pos_power['year'] = pos_power['org_time'].dt.year
 
 col_power_all_ev=col_power['1-4 Hz']
 col_power_all_tim=col_power['org_time']
+x = col_power_all_tim
+y = col_power_all_ev
+x_numeric = (x - x.min()).dt.total_seconds()  # Convert to seconds
+
+coeffs = np.polyfit(x_numeric, y, 1)
+linear_fit = np.poly1d(coeffs)
+linear_fit = np.poly1d(coeffs)
+y_fit = linear_fit(x_numeric)
+
+
 
 fig,ax=plt.subplots()
-ax.scatter(col_power_all_tim,col_power_all_ev)
+ax.scatter(col_power_all_tim,col_power_all_ev,s=0.5)
 
 
+fig, ax = plt.subplots(figsize=(8, 5),dpi=300)
+ax.scatter(x, y, s=6, label="Data", alpha=0.6,color="grey",edgecolor="black")
+ax.plot(x, y_fit, color='black', linewidth=1, label="Fitted Line",ls="--")
 
+# Improve aesthetics
+ax.set_xlabel("Time")
+ax.set_ylabel("1-4 Hz Power")
+ax.set_title("Scatter Plot with Fitted Line")
+ax.legend()
+ax.grid(True, linestyle="--", alpha=0.6)
 
+plt.show()
+fig.savefig("/Users/sebinjohn/Downloads/dem_bath_power.png")
 
 
 

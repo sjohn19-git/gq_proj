@@ -12,12 +12,12 @@ from osgeo import gdal
 # Authenticate and Initialize GEE
 ee.Initialize()
 
-target_date = datetime.datetime(2005, 4, 1)
+target_date = datetime.datetime(2010, 3, 15)
 
 #delete()
 
 
-date_range = 10  # Search ±10 days around target date
+date_range = 30  # Search ±10 days around target date
 start_date = target_date - datetime.timedelta(days=date_range)
 end_date = target_date + datetime.timedelta(days=date_range)
 
@@ -90,7 +90,7 @@ sorted_images = {key: selected_images[key] for key in sorted(selected_images, ke
 
 def dwnld(name,imge,dates_t):
     try:
-        download_url = image.getDownloadURL({'scale': 100,'region': image.geometry()})
+        download_url = image.getDownloadURL({'scale': 90,'region': image.geometry()})
         file_path = '/Users/sebinjohn/Downloads/tmp/columbia_terminus_image.zip'  # Update with your desired local file path
         urllib.request.urlretrieve(download_url, file_path)
         with zipfile.ZipFile(file_path, 'r') as zip_ref:

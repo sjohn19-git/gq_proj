@@ -19,7 +19,7 @@ import re
 import pandas as pd
 
 #loading polygon
-shapefile_path = "/Users/sebinjohn/gq_proj/codes/qgis_sst/polygon.shp"
+shapefile_path = "/Users/sebinjohn/gq_proj/codes/SST/qgis_sst/polygon.shp"
 gdf = gpd.read_file(shapefile_path)
 print(gdf.head())
 gdf.plot()
@@ -104,7 +104,7 @@ plt.plot(df_yearly_avg["year"], df_yearly_avg["avg_sst"], marker="o", linestyle=
 
 # Formatting
 plt.xlabel("Year")
-plt.ylabel("Average SST (°C)")
+plt.ylabel("Average SST (°K)")
 plt.title("Yearly Average SST Inside Polygon")
 plt.legend()
 plt.grid(True)
@@ -149,6 +149,8 @@ df_sst = df_sst.sort_values(by="time").reset_index(drop=True)
 
 # Save to CSV (optional)
 df_sst.to_csv("/Users/sebinjohn/gq_proj/data/SST/avg_sst_timeseries_full_grid.csv", index=False)
+
+#df_sst=pd.read_csv("/Users/sebinjohn/gq_proj/data/SST/avg_sst_timeseries_full_grid.csv")
 
 # Plotting Time Series for Average SST over the entire grid
 plt.figure(figsize=(12, 6))
